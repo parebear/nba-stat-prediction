@@ -59,5 +59,8 @@ def urlSetter(firstName, lastName):
         print(strippedRows[i])
         i += 1
 
+    # now that I have list of players, parse name for player page url, then
+    # do the rest
+
 if __name__ == "__main__":
     getPlayer()
