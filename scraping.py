@@ -56,7 +56,6 @@ def urlSetter(firstName, lastName):
     i = 0
     for elem in rows_data:
         strippedRows.extend(elem[0].strip().split(','))
-        print(strippedRows[i])
         i += 1
 
     # now that I have list of players, parse name for player page url, then
