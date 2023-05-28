@@ -3,20 +3,21 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
+import string
 
 def getPlayer():
     player = ""
 
     while (player == ""):
          
-        player = input("Give me a player: ")
+        player = input("Give me a player: ").strip()
 
         playerToSplit = player.split()
         if (len(playerToSplit) < 2):
             print("Need a first and last name!")
             player = ""
+    
     print()
-    print("Player chosen was {}".format(player))
 
     playerToSplit = player.split()
     firstName = playerToSplit[0]
@@ -26,7 +27,7 @@ def getPlayer():
 
 def urlSetter(firstName, lastName):
     #URL to scrape
-
+    playerFullName = "{} {}".format(firstName, lastName)
     lastInitial = lastName.lower()[0]
 
     url = "https://www.basketball-reference.com/players/{}/".format(lastInitial)
@@ -53,13 +54,43 @@ def urlSetter(firstName, lastName):
     print()
 
     strippedRows = []
-    i = 0
+
+    foundPlayer = False
+
     for elem in rows_data:
         strippedRows.extend(elem[0].strip().split(','))
-        i += 1
 
-    # now that I have list of players, parse name for player page url, then
-    # do the rest
+    playerFullName = playerFullName.translate(str.maketrans('','', string.punctuation))
+
+    for i in range(len(strippedRows)):
+        if (strippedRows[i].translate(str.maketrans('', '', string.punctuation)).casefold() == playerFullName.casefold()):
+            foundPlayer = True
+
+    if (foundPlayer):
+        print("Found the player we wanted")
+        print()
+        if (len(lastName) >= 5):
+            lastNameFirstFive = lastName[:5]
+        else:
+            lastNameFirstFive = lastName
+        if (len(firstName) >= 2):
+            firstNameFirstTwo = firstName[:2]
+        else:
+            firstNameFirstTwo = firstName
+        playerNameUrl = "{}{}01".format(lastNameFirstFive.lower(), firstNameFirstTwo.lower())
+        playerPage(playerNameUrl, url)
+
+    else:
+        print("Player wasn't found")
+        getPlayer()
+
+def playerPage(playerNameUrl, url):
+    # do something
+    url = url + "{}.html".format(playerNameUrl)
+
+    html = urlopen(url)
+
+    soup = BeautifulSoup(html, features="lxml")
 
 if __name__ == "__main__":
     getPlayer()
