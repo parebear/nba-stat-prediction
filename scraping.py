@@ -92,5 +92,6 @@ def playerPage(playerNameUrl, url):
 
     soup = BeautifulSoup(html, features="lxml")
 
+
 if __name__ == "__main__":
     getPlayer()
